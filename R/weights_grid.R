@@ -8,6 +8,7 @@
 #'  and resolution of the point process model.
 #' @param coord The names of the coordinates. Default is c("X","Y").
 #' @param control A list of control options passed from ppmData
+#' @param method Method for point generation in terra::spatSample
 #' @export
 #' @author Skipton Woolley
 #' @examples
@@ -23,7 +24,8 @@
 gridQuad <- function(npoints,
                      window,
                      coord = c("X","Y"),
-                     control){
+                     control,
+                     method = 'regular'){
 
   if(is.null(window)) stop("This function requires a window (terra raster) to work.")
   if(!inherits(window,"SpatRaster")) stop("'window' needs to be a 'SpatRaster' from the 'terra' package.")

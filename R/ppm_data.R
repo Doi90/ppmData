@@ -77,6 +77,8 @@
 #' "quasi.random" for quasi-random, "pseudo.random" for pseudo-random (regular
 #' random) and "grid" for a regular grid at a set resolution (with respect to
 #' the original window resolution).
+#' @param method Character The method used by terra::spatSample when quad.method
+#'  is set to "grid"
 #' @param interpolation Character The interpolation method to use when extracting
 #' covariate data at a presence or quadrature location. Default is "bilinear",
 #' can also use "simple", this is based
@@ -141,6 +143,7 @@ ppmData <- function(presences,
                     coord = c('X','Y'),
                     mark.id = "SpeciesID",
                     quad.method = c("quasi.random","pseudo.random","grid"),
+                    method = c("regular", "random", "stratified", "weights"),
                     interpolation = c("simple","bilinear"),
                     unit = c("geo","m","km","ha"),
                     na.rm = FALSE,
@@ -148,6 +151,7 @@ ppmData <- function(presences,
 
   # default methods
   quad.method <- match.arg(quad.method)
+  method <- match.arg(method)
   interp.method <- match.arg(interpolation)
   unit <- match.arg(unit)
   control <- checkControl(control, quad.method, unit)
@@ -195,7 +199,8 @@ ppmData <- function(presences,
                        npoints = npoints,
                        window = window,
                        coord =  coord,
-                       control = control)
+                       control = control,
+                       method = method)
 
   ## Sometimes the points are very close together, so let's jitter if needed.
   reswindow <- terra::res(window)[1]
@@ -400,7 +405,7 @@ wideData <- function(presence, quadrature, sitecovariates, wts, coord, mark.id, 
 }
 
 
-quadMethod <- function(quad.method, npoints, window, coord, control){
+quadMethod <- function(quad.method, npoints, window, coord, control, method){
   quad <- switch(quad.method,
                   quasi.random = quasiRandomQuad(npoints,
                                           window,
@@ -413,7 +418,8 @@ quadMethod <- function(quad.method, npoints, window, coord, control){
                   grid = gridQuad(npoints,
                                   window,
                                   coord,
-                                  control))
+                                  control,
+                                  method))
   return(quad)
 }
 
