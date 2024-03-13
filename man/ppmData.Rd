@@ -13,6 +13,7 @@ ppmData(
   coord = c("X", "Y"),
   mark.id = "SpeciesID",
   quad.method = c("quasi.random", "pseudo.random", "grid"),
+  method = c("regular", "random", "stratified", "weights"),
   interpolation = c("simple", "bilinear"),
   unit = c("geo", "m", "km", "ha"),
   na.rm = FALSE,
@@ -59,6 +60,9 @@ created.}
 "quasi.random" for quasi-random, "pseudo.random" for pseudo-random (regular
 random) and "grid" for a regular grid at a set resolution (with respect to
 the original window resolution).}
+
+\item{method}{Character The method used by terra::spatSample when quad.method
+is set to "grid"}
 
 \item{interpolation}{Character The interpolation method to use when extracting
 covariate data at a presence or quadrature location. Default is "bilinear",

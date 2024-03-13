@@ -4,7 +4,7 @@
 \alias{gridQuad}
 \title{gridQuad}
 \usage{
-gridQuad(npoints, window, coord = c("X", "Y"), control)
+gridQuad(npoints, window, coord = c("X", "Y"), control, method = "regular")
 }
 \arguments{
 \item{npoints}{The number of background points to use. The default is 1000,
@@ -16,6 +16,8 @@ and resolution of the point process model.}
 \item{coord}{The names of the coordinates. Default is c("X","Y").}
 
 \item{control}{A list of control options passed from ppmData}
+
+\item{method}{Method for point generation in terra::spatSample}
 }
 \description{
 A relatively quick way to generate psuedo-random quadrature set
