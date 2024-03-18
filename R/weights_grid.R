@@ -33,7 +33,7 @@ gridQuad <- function(npoints,
   ## fix this to regular grid
   bk_r <- terra::spatSample(x = window,
                             size = npoints,
-                            method = 'regular',
+                            method,
                             na.rm = TRUE,
                             as.raster = TRUE,
                             values = FALSE)
