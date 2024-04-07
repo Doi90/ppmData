@@ -31,14 +31,27 @@ gridQuad <- function(npoints,
   if(!inherits(window,"SpatRaster")) stop("'window' needs to be a 'SpatRaster' from the 'terra' package.")
 
   ## fix this to regular grid
-  bk_r <- terra::spatSample(x = window,
-                            size = npoints,
-                            method,
-                            na.rm = TRUE,
-                            as.raster = TRUE,
-                            values = FALSE)
+  # bk_r <- terra::spatSample(x = window,
+  #                           size = npoints,
+  #                           method,
+  #                           na.rm = TRUE,
+  #                           as.raster = TRUE,
+  #                           values = FALSE)
+  #
+  # bk_sites <- terra::as.data.frame(bk_r,xy=TRUE)[,-3]
 
-  bk_sites <- terra::as.data.frame(bk_r,xy=TRUE)[,-3]
+  bk_weight <- terra::spatSample(x = window,
+                                 size = npoints,
+                                 method,
+                                 na.rm = TRUE,
+                                 as.raster = FALSE,
+                                 xy = TRUE,
+                                 values = FALSE,
+                                 cells = FALSE)
+
+  bk_sites <- bk_weight[ , c("x", "y")]
+
+  rownames(bk_sites) <- NULL
 
   nbk <- nrow(bk_sites)
   if(!control$quiet)message(sprintf("There are %s background sites generated using 'gridQuad' this is based on %s points, there will be less quadrature points than selected as na cells are removed and the grid is kept regular.", nbk,npoints))
