@@ -128,7 +128,7 @@ gridWeights <- function(presences,
       window_area <- terra::global(areas.m, "sum", na.rm=TRUE)
       bck_wts <- rep(as.numeric(window_area)/nquad,nquad)
     } else{
-      areas <- terra::cellSize(window, unit=unit)
+      areas <- terra::cellSize(window, unit=unit, transform = FALSE)
       bck_wts_site <- terra::extract(areas,allpts[allpts$dataset=="quad",coord],method="bilinear")[,2]
       window_area <- as.numeric(terra::global(areas, "sum", na.rm=TRUE))
       window_wts <- bck_wts_site/sum(bck_wts_site,na.rm = TRUE)
