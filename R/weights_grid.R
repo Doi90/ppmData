@@ -56,7 +56,7 @@ gridQuad <- function(npoints,
 
   ## C++ weighted random sampling for now
 
-  # Rcpp::sourceCpp(file.path("R", "random_sample.cpp"))
+  Rcpp::sourceCpp(file.path("R", "random_sample.cpp"))
 
   weighted_sample <- function(r, size = 50000) {
 
@@ -81,7 +81,7 @@ gridQuad <- function(npoints,
 
   }
 
-  bk_sites <- weighted_sample(bias, 50000)
+  bk_sites <- weighted_sample(window, 50000)
 
 
   rownames(bk_sites) <- NULL
