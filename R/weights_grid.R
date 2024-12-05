@@ -56,7 +56,7 @@ gridQuad <- function(npoints,
 
   ## C++ weighted random sampling for now
 
-  Rcpp::sourceCpp("C:/Users/wilko/Downloads/random_sample.cpp")
+  Rcpp::sourceCpp("R/random_sample.cpp")
 
   weighted_sample <- function(r, size = 50000) {
 
