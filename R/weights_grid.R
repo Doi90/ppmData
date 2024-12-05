@@ -40,16 +40,49 @@ gridQuad <- function(npoints,
   #
   # bk_sites <- terra::as.data.frame(bk_r,xy=TRUE)[,-3]
 
-  bk_weight <- terra::spatSample(x = window,
-                                 size = npoints,
-                                 method,
-                                 na.rm = TRUE,
-                                 as.raster = FALSE,
-                                 xy = TRUE,
-                                 values = FALSE,
-                                 cells = FALSE)
 
-  bk_sites <- bk_weight[ , c("x", "y")]
+  ## Commenting out below to use C++ approach while terra is behaving god awfully slow
+
+  # bk_weight <- terra::spatSample(x = window,
+  #                                size = npoints,
+  #                                method,
+  #                                na.rm = TRUE,
+  #                                as.raster = FALSE,
+  #                                xy = TRUE,
+  #                                values = FALSE,
+  #                                cells = FALSE)
+#
+#   bk_sites <- bk_weight[ , c("x", "y")]
+
+  ## C++ weighted random sampling for now
+
+  Rcpp::sourceCpp("C:/Users/wilko/Downloads/random_sample.cpp")
+
+  weighted_sample <- function(r, size = 50000) {
+
+    df <- terra::as.data.frame(r, xy = TRUE, na.rm = TRUE)
+    colnames(df) <- c("x", "y", "values")
+
+    if (size > nrow(df)) {
+
+      return(
+        df[ , c("x", "y")]
+      )
+
+    } else {
+
+      rnd <- random_sample(df$values, size)
+
+      return(
+        df[rnd, c("x", "y")]
+      )
+
+    }
+
+  }
+
+  bk_sites <- weighted_sample(bias, 50000)
+
 
   rownames(bk_sites) <- NULL
 
