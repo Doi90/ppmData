@@ -44,11 +44,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// random_sample
+std::vector<size_t> random_sample(std::vector<double> w, int n);
+RcppExport SEXP _ppmData_random_sample(SEXP wSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(random_sample(w, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ppmData_deltri_cpp", (DL_FUNC) &_ppmData_deltri_cpp, 1},
     {"_ppmData_dirtess_poly_area", (DL_FUNC) &_ppmData_dirtess_poly_area, 2},
     {"_ppmData_dirtess_cpp", (DL_FUNC) &_ppmData_dirtess_cpp, 1},
+    {"_ppmData_random_sample", (DL_FUNC) &_ppmData_random_sample, 2},
     {NULL, NULL, 0}
 };
 

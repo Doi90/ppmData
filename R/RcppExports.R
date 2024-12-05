@@ -13,3 +13,7 @@ dirtess_cpp <- function(coords) {
     .Call(`_ppmData_dirtess_cpp`, coords)
 }
 
+random_sample <- function(w, n) {
+    .Call(`_ppmData_random_sample`, w, n)
+}
+
