@@ -139,6 +139,7 @@
 ppmData <- function(presences,
                     window = NULL,
                     covariates = NULL,
+                    region_mask = NULL,
                     npoints = NULL,
                     coord = c('X','Y'),
                     mark.id = "SpeciesID",
@@ -234,7 +235,7 @@ ppmData <- function(presences,
 
       sitecovariates <- getCovariates(pbxy = wts,
                                       covariates = covariates,
-                                      window = window,
+                                      region_mask = region_mask,
                                       interpolation = interpolation,
                                       coord = coord,
                                       buffer.NA = control$buffer.NA,
@@ -255,7 +256,7 @@ ppmData <- function(presences,
       # extract the covariate data
       sitecovariates <- getCovariates(pbxy = wts,
                                       covariates = covariates,
-                                      window = window,
+                                      region_mask = region_mask,
                                       interpolation = interpolation,
                                       coord = coord,
                                       buffer.NA = control$buffer.NA,
@@ -550,7 +551,7 @@ cleanCovariatesPPMdata <- function(dat){
 }
 
 ## function to extract covariates for presence and background points.
-getCovariates <- function(pbxy, covariates=NULL, window, interpolation, coord, buffer.NA, buffer.size, quiet){
+getCovariates <- function(pbxy, covariates=NULL, region_mask, interpolation, coord, buffer.NA, buffer.size, quiet){
   if(is.null(covariates)){
     covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord])
   } else {
@@ -568,13 +569,13 @@ getCovariates <- function(pbxy, covariates=NULL, window, interpolation, coord, b
 
       covars <- pbxy[,coord] %>%
         tidyverse::as_tibble() %>%
-        tidyverse::mutate(cell = terra::cellFromXY(window,
-                                 pbxy[,coord])) %>%
+        tidyverse::mutate(cell = terra::cellFromXY(region_mask,
+                                                   pbxy[,coord])) %>%
         tidyverse::left_join(covariates,
-                  by = "cell") %>%
+                             by = "cell") %>%
         tidyverse::select(-x,
-               -y,
-               -cell)
+                          -y,
+                          -cell)
 
       covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
 
