@@ -234,6 +234,7 @@ ppmData <- function(presences,
 
       sitecovariates <- getCovariates(pbxy = wts,
                                       covariates = covariates,
+                                      window = window,
                                       interpolation = interpolation,
                                       coord = coord,
                                       buffer.NA = control$buffer.NA,
@@ -254,6 +255,7 @@ ppmData <- function(presences,
       # extract the covariate data
       sitecovariates <- getCovariates(pbxy = wts,
                                       covariates = covariates,
+                                      window = window,
                                       interpolation = interpolation,
                                       coord = coord,
                                       buffer.NA = control$buffer.NA,
@@ -548,16 +550,35 @@ cleanCovariatesPPMdata <- function(dat){
 }
 
 ## function to extract covariates for presence and background points.
-getCovariates <- function(pbxy, covariates=NULL, interpolation, coord, buffer.NA, buffer.size, quiet){
+getCovariates <- function(pbxy, covariates=NULL, window, interpolation, coord, buffer.NA, buffer.size, quiet){
   if(is.null(covariates)){
     covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord])
   } else {
-    covars <- terra::extract(x = covariates,
-                             y = as.matrix(cbind(X=as.numeric(pbxy[,coord[1]]),
-                                                 Y=as.numeric(pbxy[,coord[2]]))),
-                             method=interpolation)#,
-                             # na.rm=TRUE) ## apparently na.rm doesn't work for matrix
-    covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
+
+    if(class(covariates) == "SpatRaster"){
+
+      covars <- terra::extract(x = covariates,
+                               y = as.matrix(cbind(X=as.numeric(pbxy[,coord[1]]),
+                                                   Y=as.numeric(pbxy[,coord[2]]))),
+                               method=interpolation)#,
+      # na.rm=TRUE) ## apparently na.rm doesn't work for matrix
+      covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
+
+    } else if(class(covariates) == "data.frame"){
+
+      covars <- pbxy[,coord] %>%
+        as_tibble() %>%
+        mutate(cell = cellFromXY(window,
+                                 pbxy[,coord])) %>%
+        left_join(covariates,
+                  by = "cell") %>%
+        select(-x,
+               -y,
+               -cell)
+
+      covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
+
+    }
   if(buffer.NA){
     if(any(!complete.cases(covars))){
         if(!quiet)message('NA cells generated during covariate extraction. Extracting values from nearest (1 step) neighbour -- might be prudent to check imputation (and why it was imputed).')
