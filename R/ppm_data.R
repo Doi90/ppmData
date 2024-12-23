@@ -567,12 +567,12 @@ getCovariates <- function(pbxy, covariates=NULL, window, interpolation, coord, b
     } else if(class(covariates) == "data.frame"){
 
       covars <- pbxy[,coord] %>%
-        as_tibble() %>%
-        mutate(cell = cellFromXY(window,
+        tidyverse::as_tibble() %>%
+        tidyverse::mutate(cell = terra::cellFromXY(window,
                                  pbxy[,coord])) %>%
-        left_join(covariates,
+        tidyverse::left_join(covariates,
                   by = "cell") %>%
-        select(-x,
+        tidyverse::select(-x,
                -y,
                -cell)
 
