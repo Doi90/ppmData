@@ -19,6 +19,7 @@ Imports:
     randtoolbox,
     Rcpp,
     spatstat.geom
+    tidyverse
 Suggests: 
     spatstat,
     knitr,
