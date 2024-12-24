@@ -568,15 +568,14 @@ getCovariates <- function(pbxy, covariates=NULL, region_mask, interpolation, coo
     } else if(class(covariates) == "data.frame"){
 
       covars <- pbxy[,coord] %>%
-        tidyverse::as_tibble() %>%
-        tidyverse::mutate(cell = terra::cellFromXY(region_mask,
+        dplyr::as_tibble() %>%
+        dplyr::mutate(cell = terra::cellFromXY(region_mask,
                                                    pbxy[,coord])) %>%
-        tidyverse::left_join(covariates,
-                             by = "cell")
-
-      covars <- covars[ , -c(-x,
-                             -y,
-                             -cell)]
+        dplyr::left_join(covariates,
+                             by = "cell") %>%
+        dplyr::select(-x,
+                      -y,
+                      -cell)
 
       covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
 
