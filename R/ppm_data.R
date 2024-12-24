@@ -572,10 +572,11 @@ getCovariates <- function(pbxy, covariates=NULL, region_mask, interpolation, coo
         tidyverse::mutate(cell = terra::cellFromXY(region_mask,
                                                    pbxy[,coord])) %>%
         tidyverse::left_join(covariates,
-                             by = "cell") %>%
-        tidyverse::select(-x,
-                          -y,
-                          -cell)
+                             by = "cell")
+
+      covars <- covars[ , -c(-x,
+                             -y,
+                             -cell)]
 
       covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
 
