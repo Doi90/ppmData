@@ -573,8 +573,7 @@ getCovariates <- function(pbxy, covariates=NULL, region_mask, interpolation, coo
                                                    pbxy[,coord])) %>%
         dplyr::left_join(covariates,
                              by = "cell") %>%
-        dplyr::select(-X,
-                      -Y,
+        dplyr::select(-dplyr::any_of(coord),
                       -cell)
 
       covars <- cbind(SiteID=pbxy[,"SiteID"],pbxy[,coord],covars)
